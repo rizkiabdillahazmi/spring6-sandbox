@@ -4,11 +4,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
 import java.time.Duration;
+import java.util.Set;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -34,14 +38,36 @@ class RedisTest {
 
     @Test
     void list() {
-        ListOperations<String, String> listOperations = redisTemplate.opsForList();
+        ListOperations<String, String> operations = redisTemplate.opsForList();
 
-        listOperations.rightPush("names", "Rizki");
-        listOperations.rightPush("names", "Abdillah");
-        listOperations.rightPush("names", "Azmi");
+        operations.rightPush("names", "Rizki");
+        operations.rightPush("names", "Abdillah");
+        operations.rightPush("names", "Azmi");
 
-        assertEquals("Rizki", listOperations.leftPop("names"));
-        assertEquals("Abdillah", listOperations.leftPop("names"));
-        assertEquals("Azmi", listOperations.leftPop("names"));
+        assertEquals("Rizki", operations.leftPop("names"));
+        assertEquals("Abdillah", operations.leftPop("names"));
+        assertEquals("Azmi", operations.leftPop("names"));
+    }
+
+    @Test
+    void set() {
+        SetOperations<String, String> operations = redisTemplate.opsForSet();
+
+        operations.add("students", "Rizki");
+        operations.add("students", "Rizki");
+        operations.add("students", "Rizki");
+        operations.add("students", "Abdillah");
+        operations.add("students", "Abdillah");
+        operations.add("students", "Abdillah");
+        operations.add("students", "Azmi");
+        operations.add("students", "Azmi");
+        operations.add("students", "Azmi");
+
+        Set<String> students = operations.members("students");
+        assertEquals(3, students.size());
+
+        assertThat(students, hasItems("Rizki", "Abdillah", "Azmi"));
+
+        redisTemplate.delete("students");
     }
 }
