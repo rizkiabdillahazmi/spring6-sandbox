@@ -47,6 +47,8 @@ class RedisTest {
         assertEquals("Rizki", operations.leftPop("names"));
         assertEquals("Abdillah", operations.leftPop("names"));
         assertEquals("Azmi", operations.leftPop("names"));
+
+        redisTemplate.delete("names");
     }
 
     @Test
