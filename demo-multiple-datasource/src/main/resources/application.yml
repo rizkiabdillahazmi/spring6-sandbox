@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    replication:
+      driver-class-name: org.postgresql.Driver
+      username: postgres
+      password: 123456
+      write:
+        name: write
+        url: jdbc:postgresql://localhost:5432/example?ApplicationName=Tes-Write
+      reads:
+        - name: read1
+          url: jdbc:postgresql://localhost:5432/example?ApplicationName=Tes-Read1
+        - name: read2
+          url: jdbc:postgresql://localhost:5432/example?ApplicationName=Tes-Read2
+
+logging:
+  level:
+    com.zaxxer.hikari.HikariConfig: DEBUG
+    com.zaxxer.hikari: TRACE
